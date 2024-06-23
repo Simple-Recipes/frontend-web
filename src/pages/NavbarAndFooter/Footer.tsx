@@ -1,11 +1,14 @@
+import React from 'react';
+import { Container, Box, Typography } from '@mui/material';
 
 export const Footer = () => {
-    return (
-        <div className='main-color'>
-            <footer className='container d-flex flex-wrap 
-                justify-content-between align-items-center py-5 main-color'>
-                <p className='col-md-4 mb-0 text-white'>© Recipe App, Inc</p>
-            </footer>
-        </div>
-    );
-}
+  return (
+    <Box className="main-color" py={5}>
+      <Container className="d-flex flex-wrap justify-content-between align-items-center">
+        <Typography variant="body2" color="white" align="center">
+          © Recipe App, Inc
+        </Typography>
+      </Container>
+    </Box>
+  );
+};

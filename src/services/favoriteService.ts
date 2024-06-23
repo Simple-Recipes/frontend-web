@@ -1,5 +1,6 @@
 // src/services/favoriteService.ts
 import apiClient from './apiClient';
+import { Recipe } from './recipeService';
 
 export interface Favorite {
   userId: number;
@@ -25,6 +26,15 @@ const favoriteService = {
       throw error;
     }
   },
+  getAllMyFavorites: async (): Promise<Recipe[]> => {
+    try {
+      const response = await apiClient.get('/favorites/getAllMyFavorites');
+      return response.data.data;
+    } catch (error) {
+      console.error("Error fetching user favorites:", error);
+      throw error;
+    }
+  }
 };
 
 export default favoriteService;

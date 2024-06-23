@@ -1,7 +1,7 @@
-// src/components/Like.tsx
 import React, { useEffect, useState } from 'react';
 import likeService from '../../services/likeService';
-
+import userService from '../../services/userService';
+import { Button, Typography, Box, Alert } from '@mui/material';
 
 interface LikeProps {
   recipeId: number;
@@ -10,6 +10,7 @@ interface LikeProps {
 const Like: React.FC<LikeProps> = ({ recipeId }) => {
   const [likes, setLikes] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -22,12 +23,27 @@ const Like: React.FC<LikeProps> = ({ recipeId }) => {
       }
     };
 
+    const fetchUserProfile = async () => {
+      try {
+        const userProfile = await userService.getUserProfile();
+        setUserId(userProfile.id);
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+        setError("Failed to fetch user profile");
+      }
+    };
+
     fetchLikes();
+    fetchUserProfile();
   }, [recipeId]);
 
   const handleLike = async () => {
+    if (!userId) {
+      setError("You must be logged in to like a recipe");
+      return;
+    }
+
     try {
-      const userId = Number(localStorage.getItem("userId")); // Assume user ID is stored in local storage
       await likeService.likeRecipe({ userId, recipeId });
       setLikes(likes + 1);
     } catch (err) {
@@ -37,8 +53,12 @@ const Like: React.FC<LikeProps> = ({ recipeId }) => {
   };
 
   const handleUnlike = async () => {
+    if (!userId) {
+      setError("You must be logged in to unlike a recipe");
+      return;
+    }
+
     try {
-      const userId = Number(localStorage.getItem("userId")); // Assume user ID is stored in local storage
       await likeService.unlikeRecipe({ userId, recipeId });
       setLikes(likes - 1);
     } catch (err) {
@@ -48,19 +68,21 @@ const Like: React.FC<LikeProps> = ({ recipeId }) => {
   };
 
   if (error) {
-    return <div>{error}</div>;
+    return <Alert severity="error">{error}</Alert>;
   }
 
   return (
-    <div>
-      <button className="btn btn-primary" onClick={handleLike}>
-        Like
-      </button>
-      <button className="btn btn-secondary" onClick={handleUnlike}>
-        Unlike
-      </button>
-      <p>{likes} Likes</p>
-    </div>
+    <Box display="flex" flexDirection="column" alignItems="center" p={2}>
+      <Box mb={2}>
+        <Button variant="contained" color="primary" onClick={handleLike}>
+          Like
+        </Button>
+        <Button variant="contained" color="secondary" onClick={handleUnlike} style={{ marginLeft: '10px' }}>
+          Unlike
+        </Button>
+      </Box>
+      <Typography variant="h6">{likes} Likes</Typography>
+    </Box>
   );
 };
 

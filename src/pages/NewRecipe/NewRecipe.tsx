@@ -1,7 +1,7 @@
-// src/components/NewRecipe.tsx
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import recipeService from "../../services/recipeService";
+import { Container, Card, CardHeader, CardContent, TextField, Button, MenuItem, Select, FormControl, InputLabel, Alert, Box, Grid, Typography } from '@mui/material';
 
 const NewRecipe: React.FC = () => {
   const history = useHistory();
@@ -9,7 +9,7 @@ const NewRecipe: React.FC = () => {
   const [ingredients, setIngredients] = useState("");
   const [directions, setDirections] = useState("");
   const [link, setLink] = useState("");
-  const [source, setSource] = useState("Choose Source");
+  const [source, setSource] = useState("");
   const [ner, setNer] = useState("");
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [displayWarning, setDisplayWarning] = useState(false);
@@ -30,7 +30,7 @@ const NewRecipe: React.FC = () => {
       !ingredients ||
       !directions ||
       !link ||
-      source === "Choose Source" ||
+      !source ||
       !ner
     ) {
       setDisplayWarning(true);
@@ -61,159 +61,116 @@ const NewRecipe: React.FC = () => {
     }
   };
 
-  const sourceField = (source: string) => {
-    setSource(source);
-  };
-
   if (!isLoggedIn) {
     return (
-      <div className="alert alert-warning" role="alert">
-        Users need to be logged in to add a new recipe.
-      </div>
+      <Container maxWidth="sm" sx={{ mt: 5 }}>
+        <Alert severity="warning">
+          Users need to be logged in to add a new recipe.
+        </Alert>
+      </Container>
     );
   }
 
   return (
-    <div className="container mt-5 mb-5">
+    <Container maxWidth="md" sx={{ mt: 5 }}>
       {displaySuccess && (
-        <div className="alert alert-success" role="alert">
+        <Alert severity="success" sx={{ mb: 3 }}>
           Recipe added successfully
-        </div>
+        </Alert>
       )}
       {displayWarning && (
-        <div className="alert alert-danger" role="alert">
+        <Alert severity="error" sx={{ mb: 3 }}>
           All fields must be filled out or user needs to be logged in
-        </div>
+        </Alert>
       )}
-      <div className="card">
-        <div className="card-header">Add a new Recipe</div>
-        <div className="card-body">
-          <form method="POST">
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="title"
+      <Card>
+        <CardHeader title="Add a new Recipe" />
+        <CardContent>
+          <Box component="form" noValidate autoComplete="off">
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Title"
                   required
                   onChange={(e) => setTitle(e.target.value)}
                   value={title}
+                  variant="outlined"
                 />
-              </div>
-              <div className="col-md-9 mb-3">
-                <label className="form-label">
-                  {" "}
-                  Ingredients (comma separated){" "}
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="ingredients"
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Ingredients (comma separated)"
                   required
                   onChange={(e) => setIngredients(e.target.value)}
                   value={ingredients}
+                  variant="outlined"
                 />
-              </div>
-              <div className="col-md-9 mb-3">
-                <label className="form-label">
-                  {" "}
-                  Directions (comma separated){" "}
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="directions"
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Directions (comma separated)"
                   required
                   onChange={(e) => setDirections(e.target.value)}
                   value={directions}
+                  variant="outlined"
                 />
-              </div>
-              <div className="col-md-8 mb-3">
-                <label className="form-label"> Link </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="link"
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Link"
                   required
                   onChange={(e) => setLink(e.target.value)}
                   value={link}
+                  variant="outlined"
                 />
-              </div>
-              <div className="col-md-3 mb-3">
-                <label className="form-label"> Source</label>
-                <button
-                  className="form-control btn btn-secondary dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {source}
-                </button>
-                <ul
-                  id="addNewBookId"
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton1"
-                >
-                  <li>
-                    <a
-                      onClick={() => sourceField("Family Recipe")}
-                      className="dropdown-item"
-                    >
-                      Family Recipe
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      onClick={() => sourceField("Mom's Recipe")}
-                      className="dropdown-item"
-                    >
-                      Mom's Recipe
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      onClick={() => sourceField("Quick Recipe")}
-                      className="dropdown-item"
-                    >
-                      Quick Recipe
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      onClick={() => sourceField("Gathered")}
-                      className="dropdown-item"
-                    >
-                      Gathered
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="col-md-12 mb-3">
-              <label className="form-label">Ner (comma separated)</label>
-              <textarea
-                className="form-control"
-                id="exampleFormControlTextarea1"
-                rows={3}
-                onChange={(e) => setNer(e.target.value)}
-                value={ner}
-              ></textarea>
-            </div>
-            <div>
-              <button
-                type="button"
-                className="btn btn-secondary mt-3"
-                onClick={handleSubmit}
-              >
-                Add Recipe
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth required variant="outlined">
+                  <InputLabel>Source</InputLabel>
+                  <Select
+                    value={source}
+                    onChange={(e) => setSource(e.target.value)}
+                    label="Source"
+                  >
+                    <MenuItem value="Family Recipe">Family Recipe</MenuItem>
+                    <MenuItem value="Mom's Recipe">Mom's Recipe</MenuItem>
+                    <MenuItem value="Quick Recipe">Quick Recipe</MenuItem>
+                    <MenuItem value="Gathered">Gathered</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Ner (comma separated)"
+                  multiline
+                  rows={4}
+                  onChange={(e) => setNer(e.target.value)}
+                  value={ner}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} >
+                <Box textAlign="center" >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSubmit}
+                    size="large"
+                  >
+                    Add Recipe
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };
 

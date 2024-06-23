@@ -1,6 +1,6 @@
 // src/components/TagsManager.tsx
 import React, { useEffect, useState } from "react";
-import tagService, { Tag } from "../../services/tagService";
+import tagService, { Tag } from "../../../services/tagService";
 
 const TagsManager: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
@@ -39,7 +39,7 @@ const TagsManager: React.FC = () => {
   const handleDeleteTag = async (id: number) => {
     try {
       await tagService.deleteTag(id);
-      setTags(tags.filter(tag => tag.id !== id));
+      setTags(tags.filter((tag) => tag.id !== id));
     } catch (err) {
       console.error("Error deleting tag:", err);
       setError("Failed to delete tag");
@@ -58,10 +58,18 @@ const TagsManager: React.FC = () => {
     <div>
       <h2>Tags Manager</h2>
       <ul>
-        {tags.map(tag => (
-          <li key={tag.id} className="d-flex justify-content-between align-items-center mb-2">
+        {tags.map((tag) => (
+          <li
+            key={tag.id}
+            className="d-flex justify-content-between align-items-center mb-2"
+          >
             <span>{tag.name}</span>
-            <button className="btn btn-danger btn-sm" onClick={() => handleDeleteTag(tag.id)}>Delete</button>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => handleDeleteTag(tag.id)}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
@@ -73,7 +81,9 @@ const TagsManager: React.FC = () => {
           onChange={(e) => setNewTagName(e.target.value)}
           placeholder="New tag name"
         />
-        <button className="btn btn-primary mt-2" onClick={handleAddTag}>Add Tag</button>
+        <button className="btn btn-primary mt-2" onClick={handleAddTag}>
+          Add Tag
+        </button>
       </div>
     </div>
   );

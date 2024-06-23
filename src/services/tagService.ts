@@ -1,4 +1,3 @@
-// src/services/tagService.ts
 import apiClient from './apiClient';
 
 export interface Tag {
@@ -9,7 +8,7 @@ export interface Tag {
 const tagService = {
   getAllTags: async (): Promise<Tag[]> => {
     try {
-      const response = await apiClient.get('/recipes/tags');
+      const response = await apiClient.get('/tags/getAllMyTags');
       return response.data.data;
     } catch (error) {
       console.error("Error fetching tags:", error);
@@ -18,7 +17,7 @@ const tagService = {
   },
   addTag: async (tag: Omit<Tag, 'id'>): Promise<Tag> => {
     try {
-      const response = await apiClient.post('/recipes/tags', tag);
+      const response = await apiClient.post('/tags/addNewTag', tag);
       return response.data.data;
     } catch (error) {
       console.error("Error adding tag:", error);
@@ -27,7 +26,8 @@ const tagService = {
   },
   deleteTag: async (id: number): Promise<void> => {
     try {
-      await apiClient.delete(`/recipes/tags/${id}`);
+      const response = await apiClient.delete(`/tags/${id}`);
+      return response.data.data;
     } catch (error) {
       console.error("Error deleting tag:", error);
       throw error;
@@ -36,3 +36,4 @@ const tagService = {
 };
 
 export default tagService;
+ 

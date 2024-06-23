@@ -1,37 +1,63 @@
 import React, { useEffect } from "react";
+import { Container, Box, Typography, Button } from '@mui/material';
+import { styled } from '@mui/system';
 
-export const Home1 = () => {
+const BackgroundImage = styled('img')({
+  objectFit: 'cover',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  zIndex: -1,
+  width: '100%',
+  height: '100%',
+});
+
+const Overlay = styled(Box)({
+  zIndex: 1,
+  color: 'white',
+  textAlign: 'center',
+  marginTop: '3rem',
+});
+
+const Home1: React.FC = () => {
   useEffect(() => {}, []);
 
   return (
-    <div
-      className="position-relative d-flex align-items-center justify-content-center"
-      style={{ height: "100vh", overflow: "hidden" }}
+    <Container
+      maxWidth={false}
+      disableGutters
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        overflow: 'hidden',
+      }}
     >
-      <img
+      <BackgroundImage
         src={require("./../../../assets/Image/2.jpg")}
-        className="img-fluid w-100 h-100"
-        alt="..."
-        style={{
-          objectFit: "cover",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: -1,
-        }}
+        alt="Background"
       />
-      <div className="text-center text-white mt-3" style={{ zIndex: 1 }}>
-        <h1 className="display-4">Recipe for everyone.</h1>
-        <p className="mb-4">
-          Welcome to our recipe paradise, where there are a variety of delicious<br />
-          recipes, from home-cooked meals to exquisite dishes. Whether you are a<br />
-          novice or a chef, we have prepared detailed steps and thoughtful tips<br />
+      <Overlay>
+        <Typography variant="h2" component="h1" gutterBottom>
+          Recipe for everyone.
+        </Typography>
+        <Typography variant="body1" component="p" gutterBottom>
+          Welcome to our recipe paradise, where there are a variety of delicious
+          <br />
+          recipes, from home-cooked meals to exquisite dishes. Whether you are a
+          <br />
+          novice or a chef, we have prepared detailed steps and thoughtful tips
+          <br />
           for you. Discover more surprising recipes and start your food journey!
-        </p>
-        <a className="btn btn-success btn-lg" href="#">
+        </Typography>
+        <Button variant="contained" color="success" size="large" href="#">
           Get Recipe
-        </a>
-      </div>
-    </div>
+        </Button>
+      </Overlay>
+    </Container>
   );
 };
+
+export default Home1;

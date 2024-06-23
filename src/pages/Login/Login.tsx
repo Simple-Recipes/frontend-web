@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import authService from '../../services/authService'; // 导入authService
+import authService from '../../services/authService'; 
 import { useAuth } from "../../Utils/AuthContext";
+import { Container, Card, Typography, TextField, Button, Box, Alert } from '@mui/material';
+import '../../assets/style/app.scss'; 
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -17,7 +19,7 @@ const Login: React.FC = () => {
     setError("");
 
     try {
-      const response = await authService.login(username, password); // 使用authService进行登录
+      const response = await authService.login(username, password); 
 
       if (response.code === 1) {
         const token = response.data.token;
@@ -35,52 +37,59 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100">
-      <div className="card p-4" style={{ maxWidth: "400px", width: "100%" }}>
-        <h1 className="text-center">Login</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group mb-3">
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3 d-flex justify-content-between">
-            <Link to="/register" className="text-secondary">
+    <Container component="main" maxWidth="xs" className="login-container" sx={{ mt: { xs: 4, sm: 8 } }}>
+      <Card sx={{ padding: { xs: 2, sm: 4 }, mt: { xs: 4, sm: 8 } }}>
+        <Typography component="h1" variant="h5" align="center">
+          Login
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            value={username}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+          />
+          <Box display="flex" justifyContent="space-between" mt={2} mb={2}>
+            <Link to="/register" className="link-text">
               Register
             </Link>
-            <Link to="/request-password-reset" className="forgot-password text-secondary">
+            <Link to="/request-password-reset" className="link-text">
               Forgot Password?
             </Link>
-          </div>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <button
+          </Box>
+          {error && <Alert severity="error">{error}</Alert>}
+          <Button
             type="submit"
-            className="btn btn-secondary btn-block"
+            fullWidth
+            variant="contained"
+            color="primary"
             disabled={isLoading}
+            sx={{ mt: 3, mb: 2 }}
           >
             {isLoading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Card>
+    </Container>
   );
 };
-
-
 
 export default Login;

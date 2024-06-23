@@ -1,11 +1,10 @@
-// src/components/RecipeDetails.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import CommentsList from "./CommentsList";
 import recipeService, { Recipe } from "../../services/recipeService";
 import Like from "./Like";
 import FavoriteButton from "./FavoriteButton";
-
+import { Container, Box, Typography, Link as MuiLink, CircularProgress, Alert, Card, CardContent } from '@mui/material';
 
 const RecipeDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,55 +30,77 @@ const RecipeDetails: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Container maxWidth="md">
+        <Box textAlign="center" mt={5}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <Container maxWidth="md">
+        <Box textAlign="center" mt={5}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
+      </Container>
+    );
   }
 
   return (
-    <div>
+    <Container maxWidth="md" sx={{ mt: 5 }}>
       {recipe && (
-        <div>
-          <h1>{recipe.title}</h1>
-          <p>
-            <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
-          </p>
-          <p>
-            <strong>Directions:</strong> {recipe.directions.join(" ")}
-          </p>
-          {recipe.link && (
-            <p>
-              <strong>Link:</strong>{" "}
-              <a href={recipe.link} target="_blank" rel="noopener noreferrer">
-                {recipe.link}
-              </a>
-            </p>
-          )}
-          {recipe.source && (
-            <p>
-              <strong>Source:</strong> {recipe.source}
-            </p>
-          )}
-          <p>
-            <strong>NER:</strong> {recipe.ner.join(", ")}
-          </p>
-          <p>
-            <strong>Created At:</strong>{" "}
-            {new Date(recipe.createTime).toLocaleString()}
-          </p>
-          <p>
-            <strong>Updated At:</strong>{" "}
-            {new Date(recipe.updateTime).toLocaleString()}
-          </p>
-          <Like recipeId={parseInt(id, 10)} />
-        </div>
+        <Card>
+          <CardContent>
+            <Typography variant="h4" component="div" gutterBottom>
+              {recipe.title}
+            </Typography>
+            <Typography variant="body1" component="p" gutterBottom>
+              <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
+            </Typography>
+            <Typography variant="body1" component="p" gutterBottom>
+              <strong>Directions:</strong> {recipe.directions.join(" ")}
+            </Typography>
+            {recipe.link && (
+              <Typography variant="body1" component="p" gutterBottom>
+                <strong>Link:</strong>{" "}
+                <MuiLink href={recipe.link} target="_blank" rel="noopener noreferrer">
+                  {recipe.link}
+                </MuiLink>
+              </Typography>
+            )}
+            {recipe.source && (
+              <Typography variant="body1" component="p" gutterBottom>
+                <strong>Source:</strong> {recipe.source}
+              </Typography>
+            )}
+            <Typography variant="body1" component="p" gutterBottom>
+              <strong>NER:</strong> {recipe.ner.join(", ")}
+            </Typography>
+            <Typography variant="body1" component="p" gutterBottom>
+              <strong>Created At:</strong>{" "}
+              {new Date(recipe.createTime).toLocaleString()}
+            </Typography>
+            <Typography variant="body1" component="p" gutterBottom>
+              <strong>Updated At:</strong>{" "}
+              {new Date(recipe.updateTime).toLocaleString()}
+            </Typography>
+            <Box mt={2}>
+              <Like recipeId={parseInt(id, 10)} />
+            </Box>
+          </CardContent>
+        </Card>
       )}
 
-      <CommentsList recipeId={parseInt(id, 10)} />
-      <FavoriteButton recipeId={parseInt(id, 10)} />
-    </div>
+      <Box mt={5}>
+        <CommentsList recipeId={parseInt(id, 10)} />
+      </Box>
+      <Box mt={2}>
+        <FavoriteButton recipeId={parseInt(id, 10)} />
+      </Box>
+    </Container>
   );
 };
 

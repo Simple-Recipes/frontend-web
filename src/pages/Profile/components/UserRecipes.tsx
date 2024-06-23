@@ -1,8 +1,7 @@
-// src/components/UserRecipes.tsx
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import recipeService, { Recipe } from '../../../services/recipeService';
-
+import { List, ListItem, ListItemText, ListItemSecondaryAction, Button, Box, Alert, Typography } from '@mui/material';
 
 interface UserRecipesProps {
   recipes: Recipe[];
@@ -28,21 +27,38 @@ const UserRecipes: React.FC<UserRecipesProps> = ({ recipes, setRecipes }) => {
   };
 
   return (
-    <div>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <h2>Your Recipes</h2>
-      <ul>
+    <Box>
+      {error && <Alert severity="error">{error}</Alert>}
+      <Typography variant="h6" component="div" gutterBottom>
+        Your Recipes
+      </Typography>
+      <List>
         {recipes.map((recipe) => (
-          <li key={recipe.id} className="d-flex justify-content-between align-items-center mb-2">
-            <span>{recipe.title}</span>
-            <div>
-              <button className="btn btn-secondary btn-sm me-2" onClick={() => handleViewDetails(recipe.id)}>View Details</button>
-              <button className="btn btn-danger btn-sm" onClick={() => handleDelete(recipe.id)}>Delete</button>
-            </div>
-          </li>
+          <ListItem key={recipe.id} divider>
+            <ListItemText primary={recipe.title} />
+            <ListItemSecondaryAction>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => handleViewDetails(recipe.id)}
+                sx={{ mr: 2 }}
+              >
+                View Details
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => handleDelete(recipe.id)}
+              >
+                Delete
+              </Button>
+            </ListItemSecondaryAction>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Box>
   );
 };
 

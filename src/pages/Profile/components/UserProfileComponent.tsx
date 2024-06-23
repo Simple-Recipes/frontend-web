@@ -1,6 +1,6 @@
-// src/components/UserProfile.tsx
 import React, { useState } from 'react';
-import userService, { UserProfile }from '../../../services/userService';
+import userService, { UserProfile } from '../../../services/userService';
+import { Card, CardContent, Typography, TextField, Button, Avatar, Alert, Box, Grid } from '@mui/material';
 
 interface UserProfileProps {
   profile: UserProfile | null;
@@ -25,69 +25,84 @@ const UserProfileComponent: React.FC<UserProfileProps> = ({ profile, setProfile 
   };
 
   return (
-    <div>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {profile && (
-        <div>
-          <h1 className="text-center">User Profile</h1>
-          {profile.avatar ? (
-            <img src={profile.avatar} alt="User Avatar" className="mb-3" style={{ width: '150px', height: '150px', borderRadius: '50%' }} />
-          ) : (
-            <p>No Avatar</p>
-          )}
-          <div className="mb-3">
-            <label>Username: </label>
-            {editMode ? (
-              <input
-                type="text"
-                className="form-control"
-                value={profile.username}
-                onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-              />
-            ) : (
-              <span>{profile.username}</span>
-            )}
-          </div>
-          <div className="mb-3">
-            <label>Password: </label>
-            {editMode ? (
-              <input
-                type="password"
-                className="form-control"
-                value={profile.password}
-                onChange={(e) => setProfile({ ...profile, password: e.target.value })}
-              />
-            ) : (
-              <span> ******** </span>
-            )}
-          </div>
-          <div className="mb-3">
-            <label>Email: </label>
-            {editMode ? (
-              <input
-                type="email"
-                className="form-control"
-                value={profile.email}
-                onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-              />
-            ) : (
-              <span>{profile.email}</span>
-            )}
-          </div>
-          {profile.createTime && (
-            <div className="mb-3">
-              <label>Account Created:</label>
-              <span>{profile.createTime}</span>
-            </div>
-          )}
-          {editMode ? (
-            <button className='btn btn-secondary' onClick={handleSave}>Save</button>
-          ) : (
-            <button className='btn btn-secondary' onClick={() => setEditMode(true)}>Edit</button>
-          )}
-        </div>
-      )}
-    </div>
+    <Card>
+      <CardContent>
+        {error && <Alert severity="error">{error}</Alert>}
+        {profile && (
+          <>
+            <Typography variant="h5" component="div" align="center" gutterBottom>
+              User Profile
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                {profile.avatar ? (
+                  <Avatar src={require("./../../../assets/Image/avatar.jpeg")} alt="User Avatar" sx={{ width: 150, height: 150, margin: 'auto' }} />
+                ) : (
+                  <Typography variant="body2" align="center">No Avatar</Typography>
+                )}
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body1">Username: </Typography>
+                  {editMode ? (
+                    <TextField
+                      fullWidth
+                      value={profile.username}
+                      onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                    />
+                  ) : (
+                    <Typography variant="body2">{profile.username}</Typography>
+                  )}
+                </Box>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body1">Password: </Typography>
+                  {editMode ? (
+                    <TextField
+                      fullWidth
+                      type="password"
+                      value={profile.password}
+                      onChange={(e) => setProfile({ ...profile, password: e.target.value })}
+                    />
+                  ) : (
+                    <Typography variant="body2">********</Typography>
+                  )}
+                </Box>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body1">Email: </Typography>
+                  {editMode ? (
+                    <TextField
+                      fullWidth
+                      type="email"
+                      value={profile.email}
+                      onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                    />
+                  ) : (
+                    <Typography variant="body2">{profile.email}</Typography>
+                  )}
+                </Box>
+                {profile.createTime && (
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body1">Account Created: </Typography>
+                    <Typography variant="body2">{profile.createTime}</Typography>
+                  </Box>
+                )}
+              </Grid>
+            </Grid>
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+              {editMode ? (
+                <Button variant="contained" color="primary" onClick={handleSave} >
+                  Save
+                </Button>
+              ) : (
+                <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
+                  Edit
+                </Button>
+              )}
+            </Box>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

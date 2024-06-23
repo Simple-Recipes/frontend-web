@@ -19,6 +19,10 @@ interface RegisterResponse {
     msg: string;
   }
 
+  interface RequestPasswordResetResponse {
+    code: number;
+    msg: string;
+  }
 const authService = {
     login: async (username: string, password: string): Promise<LoginResponse> => {
         const response = await apiClient.post<LoginResponse>('/user/login', {
@@ -48,6 +52,12 @@ const authService = {
         );
         return response.data;
       },
+      requestPasswordReset: async (email: string): Promise<RequestPasswordResetResponse> => {
+        const response = await apiClient.post<RequestPasswordResetResponse>('/user/forgotPassword', {
+          email,
+        });
+        return response.data;
+      }
     
     
 };

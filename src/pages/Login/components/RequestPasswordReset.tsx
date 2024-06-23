@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { Container, Card, Typography, TextField, Button, Box, Alert } from '@mui/material';
+import authService from '../../../services/authService';
+import '../../../assets/style/app.scss'
 
 const RequestPasswordReset: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -14,14 +16,12 @@ const RequestPasswordReset: React.FC = () => {
     setMessage('');
 
     try {
-      const response = await axios.post('http://localhost:8080/user/forgotPassword', {
-        email
-      });
+      const response = await authService.requestPasswordReset(email);
 
-      if (response.data.code === 1) {
+      if (response.code === 1) {
         setMessage('Password reset link has been sent to your email.');
       } else {
-        setError(response.data.msg);
+        setError(response.msg);
       }
     } catch (error) {
       console.error('Request password reset error:', error);
@@ -32,28 +32,38 @@ const RequestPasswordReset: React.FC = () => {
   };
 
   return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100">
-      <div className="card p-4" style={{ maxWidth: '400px', width: '100%' }}>
-        <h1 className="text-center">Request Password Reset</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mb-3">
-            <input
-              type="email"
-              className="form-control"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          {error && <div className="alert alert-danger">{error}</div>}
-          {message && <div className="alert alert-success">{message}</div>}
-          <button type="submit" className="btn btn-primary btn-secondary" disabled={isLoading}>
+    <Container component="main" maxWidth="xs" className="container">
+      <Card sx={{ padding: 4, mt: 8 }}>
+        <Typography component="h1" variant="h5" align="center" >
+          Request Password Reset
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Enter your email"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          />
+          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+          {message && <Alert severity="success" sx={{ mt: 2 }}>{message}</Alert>}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={isLoading}
+            sx={{ mt: 3, mb: 2 }}
+          >
             {isLoading ? 'Sending...' : 'Send Reset Link'}
-          </button>
-        </form>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Card>
+    </Container>
   );
 };
 

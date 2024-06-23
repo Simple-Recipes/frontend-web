@@ -1,21 +1,36 @@
-// src/components/FavoriteButton.tsx
 import React, { useState, useEffect } from 'react';
-import favoriteService, { Favorite } from '../../services/favoriteService';
+import { Button, Box, Alert } from '@mui/material';
+import favoriteService from '../../services/favoriteService';
 
 interface FavoriteButtonProps {
   recipeId: number;
-  initialIsFavorited?: boolean;
 }
 
-const FavoriteButton: React.FC<FavoriteButtonProps> = ({ recipeId, initialIsFavorited = false }) => {
-  const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
+const FavoriteButton: React.FC<FavoriteButtonProps> = ({ recipeId }) => {
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkIfFavorite = async () => {
+      try {
+        const favorites = await favoriteService.getAllMyFavorites();
+        const isFavorited = favorites.some(favorite => favorite.id === recipeId);
+        setIsFavorite(isFavorited);
+      } catch (err) {
+        console.error("Error checking favorite status:", err);
+        setError("Failed to load favorite status");
+      }
+    };
+
+    checkIfFavorite();
+  }, [recipeId]);
 
   const handleAddToFavorites = async () => {
     try {
       await favoriteService.addToFavorites(recipeId);
-      setIsFavorited(true);
-    } catch (error) {
+      setIsFavorite(true);
+    } catch (err) {
+      console.error("Error adding to favorites:", err);
       setError("Failed to add to favorites");
     }
   };
@@ -23,25 +38,36 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ recipeId, initialIsFavo
   const handleRemoveFromFavorites = async () => {
     try {
       await favoriteService.removeFromFavorites(recipeId);
-      setIsFavorited(false);
-    } catch (error) {
+      setIsFavorite(false);
+    } catch (err) {
+      console.error("Error removing from favorites:", err);
       setError("Failed to remove from favorites");
     }
   };
 
   return (
-    <div>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {isFavorited ? (
-        <button className="btn btn-danger" onClick={handleRemoveFromFavorites}>
-          Remove from Favorites
-        </button>
-      ) : (
-        <button className="btn btn-primary" onClick={handleAddToFavorites}>
+    <Box display="flex" flexDirection="column" alignItems="center" p={2}>
+      {error && <Alert severity="error">{error}</Alert>}
+      <Box mb={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddToFavorites}
+          disabled={isFavorite}
+        >
           Add to Favorites
-        </button>
-      )}
-    </div>
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleRemoveFromFavorites}
+          disabled={!isFavorite}
+          style={{ marginLeft: '10px' }}
+        >
+          Remove from Favorites
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

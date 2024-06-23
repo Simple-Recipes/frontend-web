@@ -1,90 +1,110 @@
-// src/components/CommentsList.tsx
-import React, { useEffect, useState } from "react";
-import commentService, { Comment } from "../../services/commentService";
+import React, { useState, useEffect } from 'react';
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import commentService, { Comment } from '../../services/commentService';
 
-interface CommentsListProps {
-  recipeId: number;
-}
-
-const CommentsList: React.FC<CommentsListProps> = ({ recipeId }) => {
+const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
+  const [newComment, setNewComment] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        setLoading(true);
-        const fetchedComments = await commentService.getRecipeComments(recipeId);
-        setComments(fetchedComments);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch comments");
-        setLoading(false);
-      }
-    };
+  // 假设用户ID存储在localStorage中
+  const userId = Number(localStorage.getItem('userId'));
 
+  useEffect(() => {
     fetchComments();
   }, [recipeId]);
 
-  const handleCommentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchComments = async () => {
     try {
-      const userId = Number(localStorage.getItem("userId")); // Assume user ID is stored in local storage
-      const comment = {
-        recipeId,
-        userId,
-        content: newComment,
-      };
-      const submittedComment = await commentService.commentOnRecipe(comment);
-      setComments([...comments, submittedComment]);
-      setNewComment("");
-    } catch (error) {
-      console.error("Error submitting comment:", error);
-      setError("Failed to submit comment");
+      setLoading(true);
+      const result = await commentService.getRecipeComments(recipeId);
+      console.log('Fetch Comments Result:', result);
+      setComments(result);
+    } catch (err) {
+      console.error('Fetch Comments Error:', err);
+      setError('Failed to load comments');
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handlePostComment = async () => {
+    if (!newComment.trim()) {
+      setError('Comment content cannot be empty');
+      return;
+    }
+    try {
+      const comment: Comment = { recipeId, userId, content: newComment.trim() }; // 包含 userId
+      const result = await commentService.postComment(comment);
+      console.log('Post Comment Result:', result);
+      setComments([...comments, result]);
+      setNewComment('');
+    } catch (err) {
+      console.error('Post Comment Error:', err);
+      setError('Failed to post comment');
+    }
+  };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+      await commentService.deleteComment(commentId, userId);
+      console.log('Delete Comment Result:', commentId);
+      setComments(comments.filter(comment => comment.id !== commentId));
+    } catch (err) {
+      console.error('Delete Comment Error:', err);
+      setError('Failed to delete comment');
+    }
+  };
+  
 
   return (
     <div>
-      <h2>Comments</h2>
-      {comments.length === 0 ? (
-        <p>No comments yet.</p>
+      <Typography variant="h4" component="h2">Comments</Typography>
+      {loading ? (
+        <CircularProgress />
       ) : (
-        <ul>
+        <List>
           {comments.map((comment) => (
-            <li key={comment.id}>
-              <p>{comment.content}</p>
-              <small>
-                Posted by User {comment.userId} on{" "}
-                {new Date(comment.createdAt).toLocaleDateString()}
-              </small>
-            </li>
+            comment && (
+              <ListItem key={comment.id} alignItems="flex-start">
+                <ListItemText primary={comment.content} />
+                {comment.userId === userId && (
+                  <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(comment.id!)}>
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </ListItem>
+            )
           ))}
-        </ul>
+        </List>
       )}
-      <form onSubmit={handleCommentSubmit}>
-        <div className="mb-3">
-          <label htmlFor="newComment" className="form-label">Add a Comment</label>
-          <textarea
-            id="newComment"
-            className="form-control"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            required
-          ></textarea>
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-      </form>
+      {error && <Typography color="error">{error}</Typography>}
+      <div>
+        <TextField
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Write a comment..."
+          multiline
+          rows={4}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+        />
+        <Button variant="contained" color="primary" onClick={handlePostComment}>
+          Post Comment
+        </Button>
+      </div>
     </div>
   );
 };

@@ -45,7 +45,7 @@ const recipeService = {
         return response.data.data;
     },
     getUserRecipes: async (): Promise<Recipe[]> => {
-        const response = await apiClient.get<ApiResponse<Recipe[]>>('/recipes/user-recipes');
+        const response = await apiClient.get<ApiResponse<Recipe[]>>('/recipes/getAllMyRecipes');
         return response.data.data;
     },
     deleteRecipe: async (recipeId: number): Promise<void> => {

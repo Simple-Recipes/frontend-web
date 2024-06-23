@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import authService from '../../../services/authService';
+import { Container, Card, Typography, TextField, Button, Box, Alert, CircularProgress } from '@mui/material';
 
 const ResetPassword: React.FC = () => {
   const [newPassword, setNewPassword] = useState<string>('');
@@ -42,28 +43,37 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100">
-      <div className="card p-4" style={{ maxWidth: '400px', width: '100%' }}>
-        <h1 className="text-center">Reset Password</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mb-3">
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Enter your new password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && <div className="alert alert-danger">{error}</div>}
-          {message && <div className="alert alert-success">{message}</div>}
-          <button type="submit" className="btn btn-secondary btn-block" disabled={isLoading}>
-            {isLoading ? 'Resetting...' : 'Reset Password'}
-          </button>
-        </form>
-      </div>
-    </div>
+    <Container component="main" maxWidth="xs" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <Card sx={{ padding: 4, width: '100%' }}>
+        <Typography component="h1" variant="h5" align="center" gutterBottom>
+          Reset Password
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            type="password"
+            label="Enter your new password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          {error && <Alert severity="error">{error}</Alert>}
+          {message && <Alert severity="success">{message}</Alert>}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            disabled={isLoading}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            {isLoading ? <CircularProgress size={24} /> : 'Reset Password'}
+          </Button>
+        </Box>
+      </Card>
+    </Container>
   );
 };
 
