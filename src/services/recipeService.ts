@@ -1,3 +1,4 @@
+
 import apiClient from './apiClient';
 
 export interface Recipe {
@@ -25,7 +26,6 @@ export interface ApiResponse<T> {
 }
 
 const recipeService = {
-
     fetchPopularRecipes: async (): Promise<PageResult> => {
         const response = await apiClient.get<ApiResponse<PageResult>>('/recipes/popular');
         return response.data.data;
@@ -53,6 +53,10 @@ const recipeService = {
             params: { recipeId },
         });
     },
+    editRecipe: async (recipe: Recipe): Promise<Recipe> => {
+        const response = await apiClient.post<ApiResponse<Recipe>>('/recipes/edit', recipe);
+        return response.data.data;
+    }
 };
 
 export default recipeService;

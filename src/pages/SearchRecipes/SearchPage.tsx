@@ -1,4 +1,3 @@
-import RecipeList from "../Profile/components/RecipeList";
 import SearchRecipes from "./components/SearchRecipes";
 import TagsManager from "./components/TagsManager";
 

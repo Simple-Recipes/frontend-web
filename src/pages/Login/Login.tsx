@@ -22,8 +22,7 @@ const Login: React.FC = () => {
       const response = await authService.login(username, password); 
 
       if (response.code === 1) {
-        const token = response.data.token;
-        localStorage.setItem("token", token);
+        const { token, userId } = response.data;
         login(token);
         history.push("/home");
       } else {

@@ -11,19 +11,34 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import commentService, { Comment } from '../../services/commentService';
+import userService, { UserProfile } from '../../services/userService';
 
 const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  // 假设用户ID存储在localStorage中
-  const userId = Number(localStorage.getItem('userId'));
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchComments();
-  }, [recipeId]);
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    if (userId !== null) {
+      fetchComments();
+    }
+  }, [recipeId, userId]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const userProfile: UserProfile = await userService.getUserProfile();
+      setUserId(userProfile.id);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      setError('Failed to load user profile');
+    }
+  };
 
   const fetchComments = async () => {
     try {
@@ -45,7 +60,7 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
       return;
     }
     try {
-      const comment: Comment = { recipeId, userId, content: newComment.trim() }; // 包含 userId
+      const comment: Comment = { recipeId, userId: userId!, content: newComment.trim() }; // 包含 userId
       const result = await commentService.postComment(comment);
       console.log('Post Comment Result:', result);
       setComments([...comments, result]);
@@ -58,15 +73,23 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
 
   const handleDeleteComment = async (commentId: number) => {
     try {
-      await commentService.deleteComment(commentId, userId);
-      console.log('Delete Comment Result:', commentId);
-      setComments(comments.filter(comment => comment.id !== commentId));
+      // Find the comment that matches the commentId
+      const commentToDelete = comments.find(comment => comment.id === commentId);
+
+      // Check if the comment exists and the current user is the owner of the comment
+      if (commentToDelete && commentToDelete.userId === userId) {
+        await commentService.deleteComment(commentId);
+        console.log('Delete Comment Result:', commentId);
+        setComments(comments.filter(comment => comment.id !== commentId));
+      } else {
+        setError('You can only delete your own comments');
+        console.error('Delete Comment Error: Unauthorized attempt to delete comment');
+      }
     } catch (err) {
       console.error('Delete Comment Error:', err);
       setError('Failed to delete comment');
     }
   };
-  
 
   return (
     <div>

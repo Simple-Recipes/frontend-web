@@ -39,10 +39,10 @@ const commentService = {
     }
   },
 
-  deleteComment: async (commentId: number, userId: number): Promise<void> => {
+  deleteComment: async (commentId: number): Promise<void> => {
     try {
       const response = await apiClient.delete<Result<void>>('/comments/deleteComment', {
-        params: { commentId, userId },
+        params: { commentId },
       });
       console.log("deleteComment response data:", response.data);
     } catch (error) {

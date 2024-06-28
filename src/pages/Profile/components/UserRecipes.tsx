@@ -16,6 +16,10 @@ const UserRecipes: React.FC<UserRecipesProps> = ({ recipes, setRecipes }) => {
     history.push(`/recipes/${id}`);
   };
 
+  const handleEdit = (id: number) => {
+    history.push(`/recipes/edit/${id}`);
+  };
+
   const handleDelete = async (id: number) => {
     try {
       await recipeService.deleteRecipe(id);
@@ -30,7 +34,7 @@ const UserRecipes: React.FC<UserRecipesProps> = ({ recipes, setRecipes }) => {
     <Box>
       {error && <Alert severity="error">{error}</Alert>}
       <Typography variant="h6" component="div" gutterBottom>
-        Your Recipes
+        My Recipes
       </Typography>
       <List>
         {recipes.map((recipe) => (
@@ -45,6 +49,15 @@ const UserRecipes: React.FC<UserRecipesProps> = ({ recipes, setRecipes }) => {
                 sx={{ mr: 2 }}
               >
                 View Details
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => handleEdit(recipe.id)}
+                sx={{ mr: 2 }}
+              >
+                Edit
               </Button>
               <Button
                 variant="contained"

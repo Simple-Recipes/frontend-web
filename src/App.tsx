@@ -12,10 +12,11 @@ import RecipeDetails from "./pages/RecipePage/RecipeDetails";
 import SearchRecipes from "./pages/SearchRecipes/components/SearchRecipes";
 import Login from "./pages/Login/Login";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "../src/assets/style/theme"; // 确保导入了自定义主题
+import theme from "../src/assets/style/theme"; // Ensure the custom theme is imported
 import CssBaseline from "@mui/material/CssBaseline";
 import { SearchPage } from "./pages/SearchRecipes/SearchPage";
 import ProfilePage from "./pages/Profile/ProfilePage";
+import EditRecipe from "./pages/RecipePage/EditRecipe";
 
 export const App: React.FC = () => {
   return (
@@ -28,31 +29,16 @@ export const App: React.FC = () => {
             <Route path="/" exact>
               <Redirect to="/home" />
             </Route>
-            <Route path="/home">
-              <HomePage />
-            </Route>
-            <Route path="/search">
-              <SearchPage />
-            </Route>
-            <Route path="/publish">
-              <NewRecipe />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/register">
-              <Register />
-            </Route>
+            <Route path="/home" component={HomePage} />
+            <Route path="/search" component={SearchPage} />
+            <Route path="/publish" component={NewRecipe} />
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+            <Route path="/recipes/edit/:id" component={EditRecipe} />
             <Route path="/recipes/:id" component={RecipeDetails} />
-            <Route path="/request-password-reset">
-              <RequestPasswordReset />
-            </Route>
-            <Route path="/reset-password">
-              <ResetPassword />
-            </Route>
-            <Route path="/profile">
-              <ProfilePage />
-            </Route>
+            <Route path="/request-password-reset" component={RequestPasswordReset} />
+            <Route path="/reset-password" component={ResetPassword} />
+            <Route path="/profile" component={ProfilePage} />
           </Switch>
         </div>
         <Footer />

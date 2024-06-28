@@ -6,7 +6,6 @@ import UserProfileComponent from "./components/UserProfileComponent";
 import UserRecipes from "./components/UserRecipes";
 import UserFavorites from "./components/UserFavorites";
 import UserLikes from "./components/UserLikes";
-import RecipeList from "./components/RecipeList";
 import TagsList from "./components/TagsList";
 
 const ProfilePage: React.FC = () => {
@@ -64,7 +63,7 @@ const ProfilePage: React.FC = () => {
       <Card sx={{ p: 4, mt: 2 }}>
         <UserRecipes recipes={recipes} setRecipes={setRecipes} />
       </Card>
-      <RecipeList />
+      
         <UserFavorites />
         <UserLikes/>
         <TagsList/>
