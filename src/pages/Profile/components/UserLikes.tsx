@@ -4,6 +4,7 @@ import { Recipe } from '../../../services/recipeService';
 import { useHistory } from 'react-router-dom';
 import { Container, Card, CircularProgress, Alert, Typography, List, ListItem, ListItemText, ListItemSecondaryAction, Button } from '@mui/material';
 import userService from '../../../services/userService';
+import ViewDetailsButton from '../../../components/ViewDetailsButton';
 
 const UserLikes: React.FC = () => {
   const [likedRecipes, setLikedRecipes] = useState<Recipe[]>([]);
@@ -62,16 +63,9 @@ const UserLikes: React.FC = () => {
           {likedRecipes.map((recipe) => (
             <ListItem key={recipe.id} divider>
               <ListItemText primary={recipe.title} />
-              <ListItemSecondaryAction>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => handleViewDetails(recipe.id)}
-                  sx={{ mr: 2 }}
-                >
-                  View Details
-                </Button>
+              <ListItemSecondaryAction sx={{ display: 'flex', gap: 1 }}>
+              <ViewDetailsButton recipeId={recipe.id} />
+
                 <Button
                   variant="contained"
                   color="secondary"

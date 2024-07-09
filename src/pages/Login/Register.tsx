@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import authService from '../../../services/authService';
 import { Container, Card, Typography, TextField, Button, Box, Alert } from '@mui/material';
-import '../../../assets/style/app.scss'; // 确保路径正确
+//import '../../../assets/style/app.scss'; // 确保路径正确
+import authService from '../../services/authService';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>('');

@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import recipeService, { Recipe } from '../../../services/recipeService';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Button, Box, Alert, Typography } from '@mui/material';
+import ViewDetailsButton from '../../../components/ViewDetailsButton';
 
 interface UserRecipesProps {
   recipes: Recipe[];
@@ -11,10 +12,6 @@ interface UserRecipesProps {
 const UserRecipes: React.FC<UserRecipesProps> = ({ recipes, setRecipes }) => {
   const history = useHistory();
   const [error, setError] = React.useState<string | null>(null);
-
-  const handleViewDetails = (id: number) => {
-    history.push(`/recipes/${id}`);
-  };
 
   const handleEdit = (id: number) => {
     history.push(`/recipes/edit/${id}`);
@@ -40,22 +37,14 @@ const UserRecipes: React.FC<UserRecipesProps> = ({ recipes, setRecipes }) => {
         {recipes.map((recipe) => (
           <ListItem key={recipe.id} divider>
             <ListItemText primary={recipe.title} />
-            <ListItemSecondaryAction>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => handleViewDetails(recipe.id)}
-                sx={{ mr: 2 }}
-              >
-                View Details
-              </Button>
+            <ListItemSecondaryAction sx={{ display: 'flex', gap: 1 }}>
+              <ViewDetailsButton recipeId={recipe.id} />
               <Button
                 variant="contained"
                 color="secondary"
                 size="small"
                 onClick={() => handleEdit(recipe.id)}
-                sx={{ mr: 2 }}
+                sx={{ ml: 1 }}
               >
                 Edit
               </Button>
@@ -64,6 +53,7 @@ const UserRecipes: React.FC<UserRecipesProps> = ({ recipes, setRecipes }) => {
                 color="secondary"
                 size="small"
                 onClick={() => handleDelete(recipe.id)}
+                sx={{ ml: 1 }}
               >
                 Delete
               </Button>

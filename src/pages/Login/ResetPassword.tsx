@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import authService from '../../../services/authService';
 import { Container, Card, Typography, TextField, Button, Box, Alert, CircularProgress } from '@mui/material';
+import authService from '../../services/authService';
 
 const ResetPassword: React.FC = () => {
   const [newPassword, setNewPassword] = useState<string>('');

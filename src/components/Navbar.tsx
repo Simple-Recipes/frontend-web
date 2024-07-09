@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, NavLink, useHistory } from "react-router-dom";
-import { useAuth } from "../../Utils/AuthContext";
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
+import { useAuth } from "../Utils/AuthContext";
 
 const Navbar: React.FC = () => {
   const { isLoggedIn, logout } = useAuth(); // Get state and logout function from context

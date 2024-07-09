@@ -25,6 +25,11 @@ export interface ApiResponse<T> {
     data: T;
 }
 
+export interface PageResult {
+    total: number;
+    records: Recipe[];
+}
+
 const recipeService = {
     fetchPopularRecipes: async (): Promise<PageResult> => {
         const response = await apiClient.get<ApiResponse<PageResult>>('/recipes/popular');
@@ -56,7 +61,14 @@ const recipeService = {
     editRecipe: async (recipe: Recipe): Promise<Recipe> => {
         const response = await apiClient.post<ApiResponse<Recipe>>('/recipes/edit', recipe);
         return response.data.data;
-    }
+    },
+    fetchAllRecipes: async (page: number, pageSize: number): Promise<PageResult> => {
+        const response = await apiClient.get<ApiResponse<PageResult>>('/recipes/all', {
+            params: { page, pageSize },
+        });
+        return response.data.data;
+    },
+
 };
 
 export default recipeService;

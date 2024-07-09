@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Card, Typography, TextField, Button, Box, Alert } from '@mui/material';
-import authService from '../../../services/authService';
-import '../../../assets/style/app.scss'
+import '../../assets/style/app.scss'
+import authService from '../../services/authService';
 
 const RequestPasswordReset: React.FC = () => {
   const [email, setEmail] = useState<string>('');

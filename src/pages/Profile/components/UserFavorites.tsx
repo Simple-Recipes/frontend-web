@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import favoriteService from '../../../services/favoriteService';
 import { Recipe } from '../../../services/recipeService';
-import { Container, Card, CircularProgress, Alert, Typography, Box, Button } from '@mui/material';
+import { Container, Card, CircularProgress, Alert, Typography, Box, Button, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
 
 const UserFavorites: React.FC = () => {
   const [favorites, setFavorites] = useState<Recipe[]>([]);
@@ -56,28 +56,31 @@ const UserFavorites: React.FC = () => {
         <Typography variant="h5" component="div" gutterBottom>
           My Favorite Recipes
         </Typography>
-        {favorites.map((recipe) => (
-          <Box key={recipe.id} mb={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">{recipe.title}</Typography>
-            <Box>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleViewDetails(recipe.id)}
-                sx={{ mr: 2 }}
-              >
-                View Details
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => handleDelete(recipe.id)}
-              >
-                Delete
-              </Button>
-            </Box>
-          </Box>
-        ))}
+        <List>
+          {favorites.map((recipe) => (
+            <ListItem key={recipe.id} divider>
+              <ListItemText primary={recipe.title} />
+              <ListItemSecondaryAction sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => handleViewDetails(recipe.id)}
+                >
+                  View Details
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  onClick={() => handleDelete(recipe.id)}
+                >
+                  Cancel
+                </Button>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
       </Card>
     </Container>
   );

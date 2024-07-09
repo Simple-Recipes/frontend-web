@@ -29,6 +29,10 @@ const RecipeDetails: React.FC = () => {
     fetchRecipeDetails();
   }, [id]);
 
+  const isImage = (url: string) => {
+    return (/\.(jpeg|jpg|gif|png)$/i).test(url);
+  }
+
   if (loading) {
     return (
       <Container maxWidth="md">
@@ -50,27 +54,36 @@ const RecipeDetails: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 5 }}>
+    <Container maxWidth="lg" sx={{ mt: 10 }}>
       {recipe && (
         <Card>
           <CardContent>
             <Typography variant="h4" component="div" gutterBottom>
               {recipe.title}
             </Typography>
+            
+            {recipe.link && isImage(recipe.link) ? (
+              <div>
+                <Typography variant="body1" component="p" gutterBottom>
+                  {/* <strong>Link:</strong>{" "} */}
+                  {/* <MuiLink href={recipe.link} target="_blank" rel="noopener noreferrer">
+                    {recipe.link}
+                  </MuiLink> */}
+                </Typography>
+                <img src={recipe.link} alt="Recipe" style={{ width: '700px', height: '500px' }} />
+              </div>
+            ) : (
+              <div>
+                <img src={require("./../../assets/Image/1.png")} alt="Fallback Image" style={{ width: '100%', height: 'auto' }} />
+              </div>
+            )}
             <Typography variant="body1" component="p" gutterBottom>
               <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
             </Typography>
             <Typography variant="body1" component="p" gutterBottom>
               <strong>Directions:</strong> {recipe.directions.join(" ")}
             </Typography>
-            {recipe.link && (
-              <Typography variant="body1" component="p" gutterBottom>
-                <strong>Link:</strong>{" "}
-                <MuiLink href={recipe.link} target="_blank" rel="noopener noreferrer">
-                  {recipe.link}
-                </MuiLink>
-              </Typography>
-            )}
+            
             {recipe.source && (
               <Typography variant="body1" component="p" gutterBottom>
                 <strong>Source:</strong> {recipe.source}

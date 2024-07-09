@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import recipeService, { Recipe } from "../../../services/recipeService";
-import { Container, Typography, CircularProgress, Alert, List, ListItem, ListItemText, Box } from '@mui/material';
+import { Container, Typography, CircularProgress, Alert, List, ListItem, ListItemText, Box, Button } from '@mui/material';
+import ViewDetailsButton from "../../../components/ViewDetailsButton";
 
 const PopularRecipes: React.FC = () => {
   const history = useHistory();
@@ -36,6 +37,10 @@ const PopularRecipes: React.FC = () => {
 
     fetchPopularRecipes();
   }, [history]);
+
+  const handleViewDetails = (recipeId: number) => {
+    history.push(`/recipes/${recipeId}`);
+  };
 
   if (loading) {
     return (
@@ -78,44 +83,11 @@ const PopularRecipes: React.FC = () => {
               }
               secondary={
                 <>
-                  <Typography component="span" variant="body2" color="textPrimary">
-                    <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
-                  </Typography>
-                  <br />
-                  <Typography component="span" variant="body2" color="textPrimary">
-                    <strong>Directions:</strong> {recipe.directions.join(" ")}
-                  </Typography>
-                  {recipe.link && (
-                    <>
-                      <br />
-                      <Typography component="span" variant="body2" color="textPrimary">
-                        <strong>Link:</strong> <a href={recipe.link} target="_blank" rel="noopener noreferrer">{recipe.link}</a>
-                      </Typography>
-                    </>
-                  )}
-                  {recipe.source && (
-                    <>
-                      <br />
-                      <Typography component="span" variant="body2" color="textPrimary">
-                        <strong>Source:</strong> {recipe.source}
-                      </Typography>
-                    </>
-                  )}
-                  <br />
-                  <Typography component="span" variant="body2" color="textPrimary">
-                    <strong>NER:</strong> {recipe.ner.join(", ")}
-                  </Typography>
-                  <br />
-                  <Typography component="span" variant="body2" color="textPrimary">
-                    <strong>Created At:</strong> {new Date(recipe.createTime).toLocaleString()}
-                  </Typography>
-                  <br />
-                  <Typography component="span" variant="body2" color="textPrimary">
-                    <strong>Updated At:</strong> {new Date(recipe.updateTime).toLocaleString()}
-                  </Typography>
+                  {/* 其他的次要信息可以放在这里 */}
                 </>
               }
             />
+            <ViewDetailsButton recipeId={recipe.id} />
           </ListItem>
         ))}
       </List>

@@ -36,7 +36,7 @@ const UserProfileComponent: React.FC<UserProfileProps> = ({ profile, setProfile 
             <Grid container spacing={2}>
               <Grid item xs={12} md={4}>
                 {profile.avatar ? (
-                  <Avatar src={require("./../../../assets/Image/avatar.jpeg")} alt="User Avatar" sx={{ width: 150, height: 150, margin: 'auto' }} />
+                  <Avatar src={profile.avatar} alt="User Avatar" sx={{ width: 150, height: 150, margin: 'auto' }} />
                 ) : (
                   <Typography variant="body2" align="center">No Avatar</Typography>
                 )}
