@@ -9,8 +9,8 @@ const NewRecipe: React.FC = () => {
   const [ingredients, setIngredients] = useState("");
   const [directions, setDirections] = useState("");
   const [link, setLink] = useState("");
-  const [source, setSource] = useState("");
-  const [ner, setNer] = useState("");
+  const [minutes, setMinutes] = useState<number | "">("");
+  const [nutrition, setNutrition] = useState("");
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [displayWarning, setDisplayWarning] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -30,8 +30,8 @@ const NewRecipe: React.FC = () => {
       !ingredients ||
       !directions ||
       !link ||
-      !source ||
-      !ner
+      minutes === "" ||
+      !nutrition
     ) {
       setDisplayWarning(true);
       return;
@@ -44,8 +44,8 @@ const NewRecipe: React.FC = () => {
         .map((ingredient) => ingredient.trim()),
       directions: directions.split(",").map((direction) => direction.trim()),
       link,
-      source,
-      ner: ner.split(",").map((tag) => tag.trim()),
+      minutes: Number(minutes),
+      nutrition,//haha
     };
 
     console.log("Submitting recipe:", recipe);
@@ -128,7 +128,7 @@ const NewRecipe: React.FC = () => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <FormControl fullWidth required variant="outlined">
                   <InputLabel>Source</InputLabel>
                   <Select
@@ -142,15 +142,25 @@ const NewRecipe: React.FC = () => {
                     <MenuItem value="Gathered">Gathered</MenuItem>
                   </Select>
                 </FormControl>
+              </Grid> */}
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Minutes"
+                  required
+                  type="number"
+                  onChange={(e) => setMinutes(Number(e.target.value))}
+                  value={minutes}
+                  variant="outlined"
+                />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Ner (comma separated)"
-                  multiline
-                  rows={4}
-                  onChange={(e) => setNer(e.target.value)}
-                  value={ner}
+                  label="Nutrition"
+                  required
+                  onChange={(e) => setDirections(e.target.value)}
+                  value={nutrition}
                   variant="outlined"
                 />
               </Grid>

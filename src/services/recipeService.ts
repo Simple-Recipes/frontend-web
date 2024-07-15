@@ -7,11 +7,12 @@ export interface Recipe {
     ingredients: string[];
     directions: string[];
     link?: string;
-    source?: string;
-    ner: string[];
+    minutes: number;
+    userId: number; 
+    nutrition?: any; 
     createTime: string;
     updateTime: string;
-    userId: number;
+    comments?: Comment[];
 }
 
 export interface PageResult {
@@ -25,10 +26,6 @@ export interface ApiResponse<T> {
     data: T;
 }
 
-export interface PageResult {
-    total: number;
-    records: Recipe[];
-}
 
 const recipeService = {
     fetchPopularRecipes: async (): Promise<PageResult> => {

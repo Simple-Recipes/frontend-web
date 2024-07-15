@@ -7,7 +7,10 @@ import {
   List,
   ListItem,
   ListItemText,
-  IconButton
+  IconButton,
+  Box,
+  Grid,
+  Rating
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import commentService, { Comment } from '../../services/commentService';
@@ -16,6 +19,7 @@ import userService, { UserProfile } from '../../services/userService';
 const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
+  const [newRating, setNewRating] = useState<number | null>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
@@ -60,11 +64,12 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
       return;
     }
     try {
-      const comment: Comment = { recipeId, userId: userId!, content: newComment.trim() }; // 包含 userId
+      const comment: Comment = { recipeId, userId: userId!, content: newComment.trim(), rating: newRating ?? 0 };
       const result = await commentService.postComment(comment);
       console.log('Post Comment Result:', result);
       setComments([...comments, result]);
       setNewComment('');
+      setNewRating(0);
     } catch (err) {
       console.error('Post Comment Error:', err);
       setError('Failed to post comment');
@@ -73,10 +78,8 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
 
   const handleDeleteComment = async (commentId: number) => {
     try {
-      // Find the comment that matches the commentId
       const commentToDelete = comments.find(comment => comment.id === commentId);
 
-      // Check if the comment exists and the current user is the owner of the comment
       if (commentToDelete && commentToDelete.userId === userId) {
         await commentService.deleteComment(commentId);
         console.log('Delete Comment Result:', commentId);
@@ -92,8 +95,10 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
   };
 
   return (
-    <div>
-      <Typography variant="h4" component="h2">Comments</Typography>
+    <Box>
+      <Typography variant="h4" component="h2" gutterBottom>
+        Comments
+      </Typography>
       {loading ? (
         <CircularProgress />
       ) : (
@@ -101,7 +106,19 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
           {comments.map((comment) => (
             comment && (
               <ListItem key={comment.id} alignItems="flex-start">
-                <ListItemText primary={comment.content} />
+                <ListItemText
+                  primary={
+                    <Box>
+                      <Typography variant="body1" gutterBottom>
+                        {comment.content}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+                        User ID: {comment.userId}
+                      </Typography>
+                      <Rating name="read-only" value={comment.rating} readOnly />
+                    </Box>
+                  }
+                />
                 {comment.userId === userId && (
                   <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(comment.id!)}>
                     <DeleteIcon />
@@ -113,7 +130,7 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
         </List>
       )}
       {error && <Typography color="error">{error}</Typography>}
-      <div>
+      <Box mt={3}>
         <TextField
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
@@ -124,11 +141,23 @@ const CommentsList: React.FC<{ recipeId: number }> = ({ recipeId }) => {
           fullWidth
           margin="normal"
         />
-        <Button variant="contained" color="primary" onClick={handlePostComment}>
-          Post Comment
-        </Button>
-      </div>
-    </div>
+        <Box display="flex" alignItems="center" mt={2}>
+          <Typography component="legend" style={{ marginRight: '8px' }}>Rating</Typography>
+          <Rating
+            name="simple-controlled"
+            value={newRating}
+            onChange={(event, newValue) => {
+              setNewRating(newValue);
+            }}
+          />
+        </Box>
+        <Box mt={2}>
+          <Button variant="contained" color="primary" onClick={handlePostComment}>
+            Post Comment
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

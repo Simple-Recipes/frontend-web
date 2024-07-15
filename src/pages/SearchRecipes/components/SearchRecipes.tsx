@@ -100,26 +100,7 @@ const SearchRecipes: React.FC = () => {
                       </Typography>
                     </>
                   )}
-                  {recipe.source && (
-                    <>
-                      <br />
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="textPrimary"
-                      >
-                        <strong>Source:</strong> {recipe.source}
-                      </Typography>
-                    </>
-                  )}
-                  <br />
-                  <Typography
-                    component="span"
-                    variant="body2"
-                    color="textPrimary"
-                  >
-                    <strong>NER:</strong> {recipe.ner.join(", ")}
-                  </Typography>
+                  
                   <br />
                   <Typography
                     component="span"

@@ -3,6 +3,7 @@ import apiClient from './apiClient';
 export interface Comment {
   id?: number;
   recipeId: number;
+  rating: number;
   userId: number;
   content: string;
   createTime?: string;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Container, Card, CardHeader, CardContent, TextField, Button, MenuItem, Select, FormControl, InputLabel, Alert, Box, Grid, Typography, CircularProgress } from '@mui/material';
+import { Container, Card, CardHeader, CardContent, TextField, Button, Alert, Box, Grid, Typography, CircularProgress } from '@mui/material';
 import recipeService, { Recipe } from '../../services/recipeService';
 
 const EditRecipe: React.FC = () => {
@@ -10,8 +10,8 @@ const EditRecipe: React.FC = () => {
   const [ingredients, setIngredients] = useState("");
   const [directions, setDirections] = useState("");
   const [link, setLink] = useState("");
-  const [source, setSource] = useState("");
-  const [ner, setNer] = useState("");
+  const [minutes, setMinutes] = useState<number | "">("");
+  const [nutrition, setNutrition] = useState("");
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [displayWarning, setDisplayWarning] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -40,8 +40,8 @@ const EditRecipe: React.FC = () => {
       setIngredients(fetchedRecipe.ingredients.join(", "));
       setDirections(fetchedRecipe.directions.join(", "));
       setLink(fetchedRecipe.link || "");
-      setSource(fetchedRecipe.source || "");
-      setNer(fetchedRecipe.ner.join(", "));
+      setMinutes(fetchedRecipe.minutes);
+      setNutrition(fetchedRecipe.nutrition);
     } catch (error) {
       console.error('Error fetching recipe details:', error);
       setError('Failed to load recipe details');
@@ -51,7 +51,7 @@ const EditRecipe: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!title || !ingredients || !directions || !link || !source || !ner) {
+    if (!title || !ingredients || !directions || !link  || minutes === "" || !nutrition) {
       setDisplayWarning(true);
       return;
     }
@@ -63,8 +63,8 @@ const EditRecipe: React.FC = () => {
         ingredients: ingredients.split(",").map((ingredient) => ingredient.trim()),
         directions: directions.split(",").map((direction) => direction.trim()),
         link,
-        source,
-        ner: ner.split(",").map((tag) => tag.trim()),
+        minutes: Number(minutes),
+        nutrition,
       };
 
       try {
@@ -156,28 +156,23 @@ const EditRecipe: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                <FormControl fullWidth required variant="outlined">
-                  <InputLabel>Source</InputLabel>
-                  <Select
-                    value={source}
-                    onChange={(e) => setSource(e.target.value)}
-                    label="Source"
-                  >
-                    <MenuItem value="Family Recipe">Family Recipe</MenuItem>
-                    <MenuItem value="Mom's Recipe">Mom's Recipe</MenuItem>
-                    <MenuItem value="Quick Recipe">Quick Recipe</MenuItem>
-                    <MenuItem value="Gathered">Gathered</MenuItem>
-                  </Select>
-                </FormControl>
+                <TextField
+                  fullWidth
+                  label="Minutes"
+                  required
+                  type="number"
+                  onChange={(e) => setMinutes(Number(e.target.value))}
+                  value={minutes}
+                  variant="outlined"
+                />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Ner (comma separated)"
-                  multiline
-                  rows={4}
-                  onChange={(e) => setNer(e.target.value)}
-                  value={ner}
+                  label="Nutrition"
+                  required
+                  onChange={(e) => setTitle(e.target.value)}
+                  value={nutrition}
                   variant="outlined"
                 />
               </Grid>

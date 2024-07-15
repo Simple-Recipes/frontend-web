@@ -61,15 +61,9 @@ const RecipeDetails: React.FC = () => {
             <Typography variant="h4" component="div" gutterBottom>
               {recipe.title}
             </Typography>
-            
+
             {recipe.link && isImage(recipe.link) ? (
               <div>
-                <Typography variant="body1" component="p" gutterBottom>
-                  {/* <strong>Link:</strong>{" "} */}
-                  {/* <MuiLink href={recipe.link} target="_blank" rel="noopener noreferrer">
-                    {recipe.link}
-                  </MuiLink> */}
-                </Typography>
                 <img src={recipe.link} alt="Recipe" style={{ width: '700px', height: '500px' }} />
               </div>
             ) : (
@@ -83,22 +77,20 @@ const RecipeDetails: React.FC = () => {
             <Typography variant="body1" component="p" gutterBottom>
               <strong>Directions:</strong> {recipe.directions.join(" ")}
             </Typography>
-            
-            {recipe.source && (
+            <Typography variant="body1" component="p" gutterBottom>
+              <strong>Minutes:</strong> {recipe.minutes}
+            </Typography>
+
+            {recipe.nutrition && (
               <Typography variant="body1" component="p" gutterBottom>
-                <strong>Source:</strong> {recipe.source}
+                <strong>Nutrition:</strong> {JSON.stringify(recipe.nutrition)}
               </Typography>
             )}
             <Typography variant="body1" component="p" gutterBottom>
-              <strong>NER:</strong> {recipe.ner.join(", ")}
+              <strong>Created At:</strong> {new Date(recipe.createTime).toLocaleString()}
             </Typography>
             <Typography variant="body1" component="p" gutterBottom>
-              <strong>Created At:</strong>{" "}
-              {new Date(recipe.createTime).toLocaleString()}
-            </Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-              <strong>Updated At:</strong>{" "}
-              {new Date(recipe.updateTime).toLocaleString()}
+              <strong>Updated At:</strong> {new Date(recipe.updateTime).toLocaleString()}
             </Typography>
             <Box mt={2}>
               <Like recipeId={parseInt(id, 10)} />
