@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Container, Card, CardHeader, CardContent, TextField, Button, Alert, Box, Grid, Typography, CircularProgress } from '@mui/material';
-import recipeService, { Recipe } from '../../services/recipeService';
+import recipeService, { Recipe, NutritionArray } from '../../services/recipeService';
 
 const EditRecipe: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,7 +11,7 @@ const EditRecipe: React.FC = () => {
   const [directions, setDirections] = useState("");
   const [link, setLink] = useState("");
   const [minutes, setMinutes] = useState<number | "">("");
-  const [nutrition, setNutrition] = useState("");
+  const [nutrition, setNutrition] = useState<NutritionArray>([0, 0, 0, 0, 0, 0, 0]);
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [displayWarning, setDisplayWarning] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -41,7 +41,7 @@ const EditRecipe: React.FC = () => {
       setDirections(fetchedRecipe.directions.join(", "));
       setLink(fetchedRecipe.link || "");
       setMinutes(fetchedRecipe.minutes);
-      setNutrition(fetchedRecipe.nutrition);
+      setNutrition(fetchedRecipe.nutrition || [0, 0, 0, 0, 0, 0, 0]);
     } catch (error) {
       console.error('Error fetching recipe details:', error);
       setError('Failed to load recipe details');
@@ -50,8 +50,16 @@ const EditRecipe: React.FC = () => {
     }
   };
 
+  const handleNutritionChange = (index: number, value: number) => {
+    setNutrition(prev => {
+      const newNutrition: NutritionArray = [...prev] as NutritionArray;
+      newNutrition[index] = value;
+      return newNutrition;
+    });
+  };
+
   const handleSave = async () => {
-    if (!title || !ingredients || !directions || !link  || minutes === "" || !nutrition) {
+    if (!title || !ingredients || !directions || !link || minutes === "" || !nutrition) {
       setDisplayWarning(true);
       return;
     }
@@ -167,13 +175,76 @@ const EditRecipe: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <Typography variant="h6">Nutrition</Typography>
                 <TextField
                   fullWidth
-                  label="Nutrition"
+                  label="Calories"
                   required
-                  onChange={(e) => setTitle(e.target.value)}
-                  value={nutrition}
+                  type="number"
+                  onChange={(e) => handleNutritionChange(0, Number(e.target.value))}
+                  value={nutrition[0]}
                   variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Total Fat (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(1, Number(e.target.value))}
+                  value={nutrition[1]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Sugar (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(2, Number(e.target.value))}
+                  value={nutrition[2]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Sodium (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(3, Number(e.target.value))}
+                  value={nutrition[3]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Protein (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(4, Number(e.target.value))}
+                  value={nutrition[4]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Saturated Fat (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(5, Number(e.target.value))}
+                  value={nutrition[5]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Carbohydrates (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(6, Number(e.target.value))}
+                  value={nutrition[6]}
+                  variant="outlined"
+                  margin="normal"
                 />
               </Grid>
               <Grid item xs={12}>

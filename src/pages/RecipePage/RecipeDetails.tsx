@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import CommentsList from "./CommentsList";
 import recipeService, { Recipe } from "../../services/recipeService";
 import Like from "./Like";
 import FavoriteButton from "./FavoriteButton";
-import { Container, Box, Typography, Link as MuiLink, CircularProgress, Alert, Card, CardContent } from '@mui/material';
+import { Container, Box, Typography, CircularProgress, Alert, Card, CardContent } from '@mui/material';
 
 const RecipeDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,6 +16,7 @@ const RecipeDetails: React.FC = () => {
     const fetchRecipeDetails = async () => {
       try {
         const data = await recipeService.fetchRecipeDetails(parseInt(id, 10));
+        console.log("1111:", data);
         setRecipe(data);
       } catch (err) {
         setError("An error occurred while fetching the recipe details");
@@ -64,7 +64,7 @@ const RecipeDetails: React.FC = () => {
 
             {recipe.link && isImage(recipe.link) ? (
               <div>
-                <img src={recipe.link} alt="Recipe" style={{ width: '700px', height: '500px' }} />
+                <img src={recipe.link} alt={recipe.title} style={{ width: '700px', height: '500px' }} />
               </div>
             ) : (
               <div>
@@ -80,12 +80,37 @@ const RecipeDetails: React.FC = () => {
             <Typography variant="body1" component="p" gutterBottom>
               <strong>Minutes:</strong> {recipe.minutes}
             </Typography>
-
             {recipe.nutrition && (
-              <Typography variant="body1" component="p" gutterBottom>
-                <strong>Nutrition:</strong> {JSON.stringify(recipe.nutrition)}
-              </Typography>
-            )}
+  <Box>
+    <Typography variant="body1" component="p" gutterBottom>
+      <strong>Nutrition:</strong>
+    </Typography>
+    <Typography variant="body2" component="p" gutterBottom>
+      <strong>Calories:</strong> {recipe.nutrition[0]}
+    </Typography>
+    <Typography variant="body2" component="p" gutterBottom>
+      <strong>Total Fat :</strong> {recipe.nutrition[1]}
+    </Typography>
+    <Typography variant="body2" component="p" gutterBottom>
+      <strong>Sugar :</strong> {recipe.nutrition[2]}
+    </Typography>
+    <Typography variant="body2" component="p" gutterBottom>
+      <strong>Sodium :</strong> {recipe.nutrition[3]}
+    </Typography>
+    <Typography variant="body2" component="p" gutterBottom>
+      <strong>Protein :</strong> {recipe.nutrition[4]}
+    </Typography>
+    <Typography variant="body2" component="p" gutterBottom>
+      <strong>Saturated Fat :</strong> {recipe.nutrition[5]}
+    </Typography>
+    <Typography variant="body2" component="p" gutterBottom>
+      <strong>Carbohydrates :</strong> {recipe.nutrition[6]}
+    </Typography>
+  </Box>
+)}
+
+
+            
             <Typography variant="body1" component="p" gutterBottom>
               <strong>Created At:</strong> {new Date(recipe.createTime).toLocaleString()}
             </Typography>

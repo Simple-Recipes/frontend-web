@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import recipeService from "../../services/recipeService";
-import { Container, Card, CardHeader, CardContent, TextField, Button, MenuItem, Select, FormControl, InputLabel, Alert, Box, Grid, Typography } from '@mui/material';
+import { Container, Card, CardHeader, CardContent, TextField, Button, Alert, Box, Grid, Typography } from '@mui/material';
+import recipeService, { NutritionArray } from "../../services/recipeService";
 
 const NewRecipe: React.FC = () => {
   const history = useHistory();
@@ -10,7 +10,7 @@ const NewRecipe: React.FC = () => {
   const [directions, setDirections] = useState("");
   const [link, setLink] = useState("");
   const [minutes, setMinutes] = useState<number | "">("");
-  const [nutrition, setNutrition] = useState("");
+  const [nutrition, setNutrition] = useState<NutritionArray>([0, 0, 0, 0, 0, 0, 0]);
   const [displaySuccess, setDisplaySuccess] = useState(false);
   const [displayWarning, setDisplayWarning] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -24,28 +24,27 @@ const NewRecipe: React.FC = () => {
     }
   }, []);
 
+  const handleNutritionChange = (index: number, value: number) => {
+    setNutrition(prev => {
+      const newNutrition: NutritionArray = [...prev] as NutritionArray;
+      newNutrition[index] = value;
+      return newNutrition;
+    });
+  };
+
   const handleSubmit = async () => {
-    if (
-      !title ||
-      !ingredients ||
-      !directions ||
-      !link ||
-      minutes === "" ||
-      !nutrition
-    ) {
+    if (!title || !ingredients || !directions || !link || minutes === "" || !nutrition) {
       setDisplayWarning(true);
       return;
     }
 
     const recipe = {
       title,
-      ingredients: ingredients
-        .split(",")
-        .map((ingredient) => ingredient.trim()),
+      ingredients: ingredients.split(",").map((ingredient) => ingredient.trim()),
       directions: directions.split(",").map((direction) => direction.trim()),
       link,
       minutes: Number(minutes),
-      nutrition,//haha
+      nutrition,
     };
 
     console.log("Submitting recipe:", recipe);
@@ -55,6 +54,7 @@ const NewRecipe: React.FC = () => {
       setDisplaySuccess(true);
       setDisplayWarning(false);
       console.log("Recipe published successfully:", response);
+      history.push(`/recipes/${response.id}`);
     } catch (error) {
       console.error("Error publishing recipe:", error);
       setDisplayWarning(true);
@@ -128,21 +128,6 @@ const NewRecipe: React.FC = () => {
                   variant="outlined"
                 />
               </Grid>
-              {/* <Grid item xs={12} md={6}>
-                <FormControl fullWidth required variant="outlined">
-                  <InputLabel>Source</InputLabel>
-                  <Select
-                    value={source}
-                    onChange={(e) => setSource(e.target.value)}
-                    label="Source"
-                  >
-                    <MenuItem value="Family Recipe">Family Recipe</MenuItem>
-                    <MenuItem value="Mom's Recipe">Mom's Recipe</MenuItem>
-                    <MenuItem value="Quick Recipe">Quick Recipe</MenuItem>
-                    <MenuItem value="Gathered">Gathered</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid> */}
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
@@ -155,17 +140,80 @@ const NewRecipe: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <Typography variant="h6">Nutrition</Typography>
                 <TextField
                   fullWidth
-                  label="Nutrition"
+                  label="Calories"
                   required
-                  onChange={(e) => setDirections(e.target.value)}
-                  value={nutrition}
+                  type="number"
+                  onChange={(e) => handleNutritionChange(0, Number(e.target.value))}
+                  value={nutrition[0]}
                   variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Total Fat (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(1, Number(e.target.value))}
+                  value={nutrition[1]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Sugar (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(2, Number(e.target.value))}
+                  value={nutrition[2]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Sodium (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(3, Number(e.target.value))}
+                  value={nutrition[3]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Protein (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(4, Number(e.target.value))}
+                  value={nutrition[4]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Saturated Fat (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(5, Number(e.target.value))}
+                  value={nutrition[5]}
+                  variant="outlined"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  label="Carbohydrates (%DV)"
+                  required
+                  type="number"
+                  onChange={(e) => handleNutritionChange(6, Number(e.target.value))}
+                  value={nutrition[6]}
+                  variant="outlined"
+                  margin="normal"
                 />
               </Grid>
-              <Grid item xs={12} >
-                <Box textAlign="center" >
+              <Grid item xs={12}>
+                <Box textAlign="center">
                   <Button
                     variant="contained"
                     color="primary"

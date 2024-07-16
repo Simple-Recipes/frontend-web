@@ -9,11 +9,21 @@ export interface Recipe {
     link?: string;
     minutes: number;
     userId: number; 
-    nutrition?: any; 
+    nutrition?: NutritionArray;
     createTime: string;
     updateTime: string;
     comments?: Comment[];
 }
+
+export interface NutritionArray extends Array<number> {
+    0: number; // calories
+    1: number; // total_fat_PDV
+    2: number; // sugar_PDV
+    3: number; // sodium_PDV
+    4: number; // protein_PDV
+    5: number; // saturated_fat_PDV
+    6: number; // carbohydrates_PDV
+  }
 
 export interface PageResult {
     total: number;
