@@ -45,21 +45,22 @@ const authService = {
     });
     return response.data;
   },
+  requestPasswordReset: async (email: string): Promise<RequestPasswordResetResponse> => {
+    const response = await apiClient.post<RequestPasswordResetResponse>('/user/forgotPassword', {
+      email,
+    });
+    return response.data;
+  },
+  
   resetPassword: async (token: string, newPassword: string): Promise<ResetPasswordResponse> => {
     const response = await apiClient.post<ResetPasswordResponse>(
       '/user/resetPassword',
       null,
       {
         params: { newPassword },
-        headers: { 'User-Token': token },
+        headers: { 'User-Token': token },  
       }
     );
-    return response.data;
-  },
-  requestPasswordReset: async (email: string): Promise<RequestPasswordResetResponse> => {
-    const response = await apiClient.post<RequestPasswordResetResponse>('/user/forgotPassword', {
-      email,
-    });
     return response.data;
   }
 };
