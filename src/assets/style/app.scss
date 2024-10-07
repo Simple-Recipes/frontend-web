@@ -1,0 +1,23 @@
+// 变量声明
+$mainColor: #6c757d;
+$linkHoverColor: darken($mainColor, 10%);
+
+.container  {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+// .main-color {
+//   color: $mainColor;
+// }
+
+.link-text {
+  color: $mainColor;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+    color: $linkHoverColor;
+  }
+}
